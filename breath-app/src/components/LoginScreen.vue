@@ -13,7 +13,7 @@
             <circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/>
           </svg>
         </div>
-        <span class="brand">Breathe</span>
+        <span class="brand">BatteryMe</span>
       </div>
       <p class="subtitle">Encuentra tu equilibrio interior.</p>
 
@@ -45,18 +45,60 @@
 
         <div class="field">
           <label>Contraseña</label>
-          <div class="input-wrap">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <input :type="showPass ? 'text' : 'password'" v-model="password" placeholder="••••••••" :class="{ error: errors.password }" @input="errors.password = ''" />
-            <button class="eye-btn" type="button" @click="showPass = !showPass">
-              <svg v-if="!showPass" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-              <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
-            </button>
-          </div>
-          <span class="err-msg" v-if="errors.password">{{ errors.password }}</span>
-        </div>
 
-        <div class="forgot" v-if="mode === 'login'"><a href="#">¿Olvidaste tu contraseña?</a></div>
+          <div class="input-wrap">
+            <!-- icono -->
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+
+            <!-- input -->
+            <input
+              :type="showPass ? 'text' : 'password'"
+              v-model="password"
+              placeholder="••••••••"
+              :class="{ error: errors.password }"
+              @input="errors.password = ''"
+            />
+
+            <!-- botón ojito -->
+            <button
+              class="eye-btn"
+              type="button"
+              @click="showPass = !showPass"
+              :aria-label="showPass ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+           >
+             <!-- ojo abierto -->
+             <svg v-if="!showPass" width="15" height="15" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+               <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+               <circle cx="12" cy="12" r="3"/>
+             </svg>
+
+             <!-- ojo tachado -->
+             <svg v-else width="15" height="15" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+               <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+               <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+               <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+               <line x1="2" x2="22" y1="2" y2="22"/>
+             </svg>
+          </button>
+       </div>
+
+       <!-- error -->
+       <span class="err-msg" v-if="errors.password">
+         {{ errors.password }}
+       </span>
+    </div>
+
+        <div class="forgot" v-if="mode === 'login'">
+          <a href="#" @click.prevent="forgotPassword">
+             ¿Olvidaste tu contraseña?
+          </a>
+        </div>
 
         <button class="btn-teal" @click="submit" :disabled="loading">
           <span v-if="loading" class="spinner"></span>
@@ -66,11 +108,11 @@
         <div class="divider"><span>o continúa con</span></div>
 
         <div class="socials">
-          <button class="btn-social">
+          <button class="btn-social" @click="loginWithGoogle">
             <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
             Google
           </button>
-          <button class="btn-social">
+          <button class="btn-social" @click="loginWithFacebook">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
             Facebook
           </button>
@@ -111,6 +153,62 @@ async function submit() {
   await new Promise(r => setTimeout(r, 1200))
   store.login(name.value || email.value.split('@')[0], email.value)
   loading.value = false
+}
+function loginWithGoogle() {
+  loading.value = true
+  const email = prompt('Ingresa tu correo de Google')
+
+  if (!email) return
+
+  loading.value = true
+
+  setTimeout(() => {
+    store.login(email.split('@')[0], email)
+    loading.value = false
+  }, 800)
+}
+
+function loginWithFacebook() {
+  const email = prompt('Ingresa tu correo de Facebook:')
+
+  if (!email) return
+
+  if (!email.includes('@')) {
+    alert('Correo inválido')
+    return
+  }
+
+  loading.value = true
+
+  setTimeout(() => {
+    store.login(email.split('@')[0], email)
+    loading.value = false
+  }, 800)
+}
+async function forgotPassword() {
+  if (!email.value) {
+    alert('Primero ingresa tu correo 👀')
+    return
+  }
+
+  if (!email.value.includes('@')) {
+    alert('Correo inválido')
+    return
+  }
+
+  try {
+    loading.value = true
+
+    
+    await new Promise(r => setTimeout(r, 1000))
+
+    alert('Si el correo existe, te enviamos un link ✉️')
+  } catch (error) {
+     console.error(error)
+     alert('Error al enviar recuperación')
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -168,7 +266,7 @@ async function submit() {
 label { display: block; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
 
 .input-wrap { position: relative; }
-.input-wrap svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--teal); pointer-events: none; }
+.input-wrap > svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--teal); pointer-events: none; }
 .input-wrap input {
   width: 100%; padding: 12px 13px 12px 40px;
   border: 1.5px solid var(--border); border-radius: 14px;
