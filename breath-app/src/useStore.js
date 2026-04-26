@@ -80,17 +80,25 @@ export const store = {
   },
 
   completeActivity(id) {
-    const act = state.activities.find(a => a.id === id)
-    if (!act || act.done) return
-    act.done = true
-    state.battery = Math.min(state.battery + 10, 100)
-    if (state.activities.every(a => a.done)) {
-      const dayIdx = new Date().getDay()
-      const idx = dayIdx === 0 ? 6 : dayIdx - 1
-      state.streakDays[idx] = true
-      state.currentStreak++
-    }
-    persist()
+  const act = state.activities.find(a => a.id === id)
+  if (!act || act.done) return
+
+  act.done = true
+
+  const total = state.activities.length
+  const completed = state.activities.filter(a => a.done).length
+
+  // 🔥 batería proporcional + bonita (múltiplos de 5)
+  state.battery = Math.round((completed / total) * 100 / 5) * 5
+
+  if (state.activities.every(a => a.done)) {
+    const dayIdx = new Date().getDay()
+    const idx = dayIdx === 0 ? 6 : dayIdx - 1
+    state.streakDays[idx] = true
+    state.currentStreak++
+  }
+
+  persist()
   },
 
   addMoodEntry(mood, emoji, note) {

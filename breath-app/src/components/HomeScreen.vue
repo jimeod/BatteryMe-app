@@ -13,7 +13,7 @@
             <circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4" stroke-dasharray="2 2"/>
           </svg>
         </div>
-        <span class="brand">Breathe</span>
+        <span class="brand">BatteryMe</span>
       </div>
       <button class="avatar-btn" @click="store.setTab('profile')">
         <span>{{ store.initials.value }}</span>
@@ -51,7 +51,7 @@
         <span
           v-for="n in 10" :key="n"
           class="sdot"
-          :class="{ on: n * 10 <= store.state.battery }"
+          :class="{ on: n * 10 <= displayBat }"
         ></span>
       </div>
     </div>
@@ -88,7 +88,7 @@ import ActivityCard from './ActivityCard.vue'
 
 const CIRC = 282.74
 
-const displayBat = ref(store.state.battery)
+const displayBat = ref(0)
 
 const dashOffset = computed(() => CIRC - (CIRC * displayBat.value / 100))
 
