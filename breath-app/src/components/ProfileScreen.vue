@@ -17,11 +17,11 @@
       </div>
       <div class="stat-card">
         <div class="stat-num">{{ store.completedCount.value }}</div>
-        <div class="stat-lbl">✅ Actividades</div>
+        <div class="stat-lbl">🧘 Actividades</div>
       </div>
       <div class="stat-card">
         <div class="stat-num">{{ store.state.battery }}%</div>
-        <div class="stat-lbl">⚡ Batería</div>
+        <div class="stat-lbl">🔋 Batería</div>
       </div>
     </div>
 
@@ -71,19 +71,48 @@
       </div>
     </div>
 
+    <!-- logout -->
+    <div class="logout-wrap">
+      <button class="btn-logout" @click="showConfirm = true">
+        Cerrar Sesión
+      </button>
+    </div>
+
+    <!-- confirm modal -->
+    <Transition name="fade">
+      <div v-if="showConfirm" class="modal-overlay" @click.self="showConfirm = false">
+        <div class="modal-card">
+          <div class="modal-icon">👋</div>
+          <div class="modal-title">¿Cerrar sesión?</div>
+          <div class="modal-body">Tu progreso quedará guardado para cuando vuelvas.</div>
+          <div class="modal-actions">
+            <button class="btn-cancel" @click="showConfirm = false">Cancelar</button>
+            <button class="btn-confirm" @click="confirmLogout">Sí, salir</button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
     <div style="height:16px"></div>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { store } from '../useStore.js'
 
 const weekDays = ['L', 'M', 'M', 'J', 'V', 'S', 'D']
+const showConfirm = ref(false)
 
 function isToday(i) {
   const d = new Date().getDay()
   const todayIdx = d === 0 ? 6 : d - 1
   return i === todayIdx
+}
+
+function confirmLogout() {
+  showConfirm.value = false
+  store.logout()
 }
 </script>
 
@@ -183,4 +212,85 @@ function isToday(i) {
 }
 .thought-text { font-size: 12.5px; color: #085041; line-height: 1.5; margin-bottom: 4px; }
 .thought-date { font-size: 10px; color: var(--muted); }
+
+/* Logout */
+.logout-wrap {
+  padding: 6px 18px 0;
+}
+.btn-logout {
+  width: 100%;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  padding: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.btn-logout:active {
+  background: var(--teal-soft);
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex; align-items: flex-end; justify-content: center;
+  z-index: 100;
+  padding-bottom: 32px;
+}
+.modal-card {
+  background: var(--white);
+  border-radius: 24px;
+  padding: 28px 24px 24px;
+  width: calc(100% - 36px);
+  max-width: 360px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+.modal-icon { font-size: 36px; margin-bottom: 10px; }
+.modal-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px; color: var(--text);
+  margin-bottom: 8px;
+}
+.modal-body {
+  font-size: 13px; color: var(--muted);
+  line-height: 1.5; margin-bottom: 22px;
+}
+.modal-actions {
+  display: flex; gap: 10px;
+}
+.btn-cancel {
+  flex: 1;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 13px;
+  font-size: 13px; font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-cancel:active { background: var(--teal-soft); }
+.btn-confirm {
+  flex: 1;
+  background: var(--teal);
+  border: none;
+  border-radius: 14px;
+  padding: 13px;
+  font-size: 13px; font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-confirm:active { opacity: 0.85; }
+
+/* Transition */
+.fade-enter-active, .fade-leave-active { transition: opacity 0.2s; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>
