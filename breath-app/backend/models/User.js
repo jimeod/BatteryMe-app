@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
     },
     battery: {
       type: Number,
-      default: 40,
+      default: 0,
       min: 0,
       max: 100,
     },

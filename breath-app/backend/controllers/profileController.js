@@ -77,7 +77,8 @@ const completeActivity = async (req, res) => {
 
     act.done = true
     act.completedAt = new Date()
-    user.battery = Math.min(user.battery + 10, 100)
+    const completed = user.activities.filter((a) => a.done).length
+    user.battery = Math.round((completed / user.activities.length) * 100)
 
     if (user.activities.every((a) => a.done)) {
       const dayIdx = new Date().getDay()
@@ -85,6 +86,8 @@ const completeActivity = async (req, res) => {
       user.streakDays[idx] = true
       user.currentStreak += 1
     }
+
+    user.markModified('activities')
 
     await user.save()
 
@@ -98,5 +101,42 @@ const completeActivity = async (req, res) => {
     res.status(500).json({ message: 'Error del servidor', error: error.message })
   }
 }
+// @desc    Uncomplete an activity
+// @route   DELETE /api/profile/activity/:activityId
+// @access  Private
+const uncompleteActivity = async (req, res) => {
+  try {
+    const activityId = parseInt(req.params.activityId)
+    const user = await User.findById(req.user._id)
 
-module.exports = { getProfile, updateProfile, completeActivity }
+    const act = user.activities.find((a) => a.id === activityId)
+    if (!act) return res.status(404).json({ message: 'Actividad no encontrada' })
+
+    if (!act.done) {
+      return res.json({
+        battery: user.battery,
+        activities: user.activities,
+        streakDays: user.streakDays,
+        currentStreak: user.currentStreak,
+      })
+    }
+
+    act.done = false
+    act.completedAt = null
+    const completed = user.activities.filter((a) => a.done).length
+    user.battery = Math.round((completed / user.activities.length) * 100)
+    user.markModified('activities')
+    await user.save()
+
+    res.json({
+      battery: user.battery,
+      activities: user.activities,
+      streakDays: user.streakDays,
+      currentStreak: user.currentStreak,
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Error del servidor', error: error.message })
+  }
+}
+
+module.exports = { getProfile, updateProfile, completeActivity, uncompleteActivity }

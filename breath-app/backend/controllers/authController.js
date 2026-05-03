@@ -75,7 +75,7 @@ const login = async (req, res) => {
     today.setHours(0, 0, 0, 0)
     if (lastReset < today) {
       user.activities = user.activities.map((a) => ({ ...a, done: false, completedAt: null }))
-      user.battery = 40
+      user.battery = 0
       user.lastActivityReset = today
       await user.save()
     }
